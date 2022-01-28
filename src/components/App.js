@@ -1,11 +1,16 @@
-import logo from './logo.svg';
-import './App.css';
 import LandingContainer from "./LandingContainer"
+import store from "store";
+import React, { useEffect, useState } from 'react';
+
+
 function App() {
   return (
-    <div className="App">
-      <LandingContainer/>
-    </div>
+
+      <div className="App">
+        <LandingContainer />
+      </div>
+
+
   );
 }
 

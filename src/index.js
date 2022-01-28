@@ -5,7 +5,7 @@ import { createStore, applyMiddleware, compose } from "redux";
 import reduxThunk from "redux-thunk";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import App from "components/App";
+import App from "./components/App";
 import reducers from "./reducers";
 
 
@@ -29,7 +29,7 @@ toast.configure({
 
 
 ReactDOM.render(
-    <Provider store={stateStore}>
+  <Provider store={stateStore}>
       <App />
 	</Provider>,
 	document.querySelector("#root")
