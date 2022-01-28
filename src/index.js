@@ -16,15 +16,15 @@ const stateStore = createStore(
 );
 
 
-// toast.configure({
-//   position: "top-right",
-//   autoClose: 1500,
-//   hideProgressBar: false,
-//   closeOnClick: true,
-//   pauseOnHover: true,
-//   draggable: false,
-//   style: { fontSize: "1.3em" },
-// });
+toast.configure({
+  position: "top-right",
+  autoClose: 1500,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: false,
+  style: { fontSize: "1.3em" },
+});
 
 
 
