@@ -35,11 +35,6 @@ const styles = theme => ({
     plantContainer: {
         background: '#f2f2f2',
         padding: '20px'
-    },
-    highlight: {
-        marginTop: '30px',
-        marginBottom: '30px',
-        border: '2px solid red'
     }
 });
 const LandingContainer = (props) => {
