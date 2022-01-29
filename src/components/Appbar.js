@@ -8,6 +8,7 @@ const Navbar = (props) => {
     const [plantName, setPlantName] = useState("");
     const [dialogOpen, setDialogOpen] = useState(false);
 
+    // function to toggle the open state
     const toggleOpen = () => {
         setPlantName("");
         setDialogOpen(!dialogOpen);

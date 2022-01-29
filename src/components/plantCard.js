@@ -7,7 +7,7 @@ const PlantCard = (props) => {
 
     const { classes, plant } = props;
     return (
-        <Card sx={{ maxWidth: 345 }} className={props.getCardClass(plant.plantId)}>
+        <Card sx={{ maxWidth: 345 }}>
             <CardMedia
                 component="img"
                 height="350"

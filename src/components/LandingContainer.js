@@ -43,29 +43,7 @@ const styles = theme => ({
     }
 });
 const LandingContainer = (props) => {
-    const [duePlants, setDuePlants] = useState([]);
-    const [wateringPlants, setWateringPlants] = useState([]);
     const plantState = useSelector((state) => state.plants);
-
-
-    useEffect(() => {
-        var duePlantsOld = store.get("due_plants");
-        var wateringPlantsOld = store.get("watering_plants");
-        if (!duePlantsOld) {
-            store.set("due_plants", []);
-            setDuePlants([]);
-        } else {
-            store.set("due_plants", duePlantsOld);
-            setDuePlants(duePlantsOld);
-        }
-        if (!wateringPlantsOld) {
-            store.set("watering_plants", []);
-            setWateringPlants([]);
-        } else {
-            store.set("watering_plants", wateringPlantsOld);
-            setWateringPlants(wateringPlantsOld);
-        }
-    }, [])
 
     //componentDidMount
     useEffect(() => {
@@ -75,13 +53,7 @@ const LandingContainer = (props) => {
 
     const { classes } = props;
 
-    const getCardClass = (plantId) => {
-        if (duePlants.includes(plantId)) {
-            return classes.hightlight;
-        }
-        return classes.noHighlight;
-    }
-
+    //wrapper for waterPlant action
     const WaterPlantWrapper = (plant) => {
         if ((new Date() - (new Date(plant.lastWateredTime)))/1000 < 30) {
             toast.error("Please wait for 30seconds");
@@ -99,13 +71,13 @@ const LandingContainer = (props) => {
 
     }
 
+    //Wrapper for stopWatering action
     const stopWaterWrapper = (plant) =>{
-        plant = _.find(plantState, {'plantId': plant.plantId});
-        if(plant.status=="busy"){
-            props.stopWatering(plant.plantId);
-        }
+        props.stopWatering(plant.plantId);
     }
 
+
+    // function to check if plant can water
     const canWater = (plantId) => {
         var out = false;
         var plantTime;
@@ -133,11 +105,9 @@ const LandingContainer = (props) => {
                                 <Grid item key={index} sm={12}>
                                     <PlantCard
                                         classes={classes}
-                                        getCardClass={getCardClass}
                                         image={getImage(index)}
                                         plant={plant}
                                         waterPlant={WaterPlantWrapper}
-                                        //stopWaterPlant={stopWaterWrapper}
                                         canWater={canWater}
                                         deletePlant={props.deletePlant}
                                     />
