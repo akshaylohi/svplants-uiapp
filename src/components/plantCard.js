@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { Card, CardActions, CardContent, CardMedia, Button, Typography } from '@material-ui/core';
 
 
@@ -20,12 +21,20 @@ const PlantCard = (props) => {
                 <Typography variant="body2" color="text.secondary">
                     Name: {props.plant.name}
                 </Typography>
+                <Typography variant="body2" color="text.secondary">
+                    Water: {props.plant.status=="ok"?"OFF":"ON"}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                    Last Watered: {props.plant.lastWateredTime}
+                </Typography>
             </CardContent>
             <CardActions>
-                <Button variant="contained" onClick={()=>{props.waterPlant(plant.plantId);}}>{
-                     props.canWater(plant.plantId)? "Water":"Stop water"
+                <Button variant="contained" color="primary" onClick={()=>{props.waterPlant(plant)}}>{
+                     plant.status=="ok"? "Water":"Stop water"
                 }</Button>
-                {/* <Button variant="outlined">Stop Water</Button> */}
+                <Button variant="outlined" color="secondary" onClick={()=>{
+                    props.deletePlant(props.plant);
+                }}>Delete</Button>
             </CardActions>
         </Card>
     );

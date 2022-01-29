@@ -48,3 +48,35 @@ export const getPlants = () => async (dispatch) => {
       if (!_.isEmpty(error)) toast.error(error.response.data.message);
     }
   };
+
+  export const addPlant = (plant) => async (dispatch) => {
+    console.log("add plant action hit");
+    try {
+      backend.post("/api/Plants", plant)
+      .then(response=>{
+        console.log("response data: ", response.data);
+        dispatch({ type: ADD_PLANT, payload: response.data});
+        toast.success("Plant successfully added");
+      })
+      .catch(err=> toast.error(err));
+      
+    } catch (error) {
+      if (!_.isEmpty(error)) toast.error(error.response.data.message);
+    }
+  };
+
+    export const deletePlant = (plant) => async (dispatch) => {
+    console.log("add plant action hit");
+    try {
+      backend.delete("/api/Plants/"+plant.plantId)
+      .then(response=>{
+        console.log("response data: ", response.status);
+        dispatch({ type: DELETE_PLANT, payload: plant});
+        toast.success("Plant successfully deleted");
+      })
+      .catch(err=> toast.error(err));
+      
+    } catch (error) {
+      if (!_.isEmpty(error)) toast.error(error.response.data.message);
+    }
+  };

@@ -1,10 +1,11 @@
-import { CssBaseline, Container, Grid, Paper, Card } from '@material-ui/core';
-import React, { useEffect, useState } from 'react'
-import { connect } from 'react-redux'
+import { CssBaseline, Container, Grid } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
+import { connect, useSelector } from 'react-redux'
 import * as actions from "../actions"
 import _ from "lodash";
 import store from "store";
 import PlantCard from "./plantCard";
+import Navbar from "./Appbar";
 import { withStyles } from '@material-ui/core/styles';
 import plant1Image from '../resources/images/plant1.jpg';
 import plant2Image from '../resources/images/plant2.jpg';
@@ -44,6 +45,7 @@ const styles = theme => ({
 const LandingContainer = (props) => {
     const [duePlants, setDuePlants] = useState([]);
     const [wateringPlants, setWateringPlants] = useState([]);
+    const plantState = useSelector((state) => state.plants);
 
 
     useEffect(() => {
@@ -70,55 +72,46 @@ const LandingContainer = (props) => {
         props.getPlants();
     }, [])
 
-    useEffect(() => {
-        
-    }, [])
 
     const { classes } = props;
 
     const getCardClass = (plantId) => {
-        if(duePlants.includes(plantId)){
-            console.log("plant due: ", plantId);
+        if (duePlants.includes(plantId)) {
             return classes.hightlight;
         }
         return classes.noHighlight;
     }
 
-    const WaterPlantWrapper = (plantId) => {
-        var plantTime;
-        var wait = false;
-        props.plants.forEach(plant=>{
-            if(plant.plantId == plantId){
-                if(new Date()-(new Date(plant.lastWateredTime)) < 30){
-                    toast("Please wait for 30seconds");
-                    wait = true;
-                }
-            }
-        });
-        if(wait==true){
+    const WaterPlantWrapper = (plant) => {
+        if ((new Date() - (new Date(plant.lastWateredTime)))/1000 < 30) {
+            toast.error("Please wait for 30seconds");
             return;
         }
-        if(canWater(plantId)){
-            props.waterPlant(plantId);
-            setTimeout(() => {
-                props.stopWatering(plantId);
-            }, 10000);
-        }else{
-            props.stopWatering(plantId);
-        }
         
+        if (canWater(plant.plantId)) {
+            props.waterPlant(plant.plantId);
+            setTimeout(() => {
+            stopWaterWrapper(plant);
+        }, 10000);
+        } else {
+            stopWaterWrapper(plant);
+        }
+
     }
 
-    const canWater = (plantId) =>{
-        console.log("plants in canwater: ", plantId);
+    const stopWaterWrapper = (plant) =>{
+        plant = _.find(plantState, {'plantId': plant.plantId});
+        if(plant.status=="busy"){
+            props.stopWatering(plant.plantId);
+        }
+    }
+
+    const canWater = (plantId) => {
         var out = false;
         var plantTime;
-        props.plants.forEach(plant=>{
-            //console.log(plant.status);
+        props.plants.forEach(plant => {
             plantTime = new Date(plant.lastWateredTime);
-            console.log(plantTime);
-            if(plant.plantId == plantId && plant.status === "ok" && ((new Date()-plantTime)/1000)>30){
-                console.log("return true");
+            if (plant.plantId == plantId && plant.status === "ok" && ((new Date() - plantTime) / 1000) > 30) {
                 out = true;
             }
         })
@@ -129,6 +122,7 @@ const LandingContainer = (props) => {
     return (
         <React.Fragment>
             <CssBaseline />
+            <Navbar addPlant={props.addPlant}/>
             <Container maxWidth="sm" className={classes.plantContainer}>
 
                 <Grid id="plantsGrid" container>
@@ -137,14 +131,15 @@ const LandingContainer = (props) => {
                         props.plants.map((plant, index) => {
                             return (
                                 <Grid item key={index} sm={12}>
-                                    <PlantCard 
-                                    classes={classes} 
-                                    getCardClass={getCardClass} 
-                                    image={getImage(index)} 
-                                    plant={plant} 
-                                    waterPlant = {WaterPlantWrapper}
-                                    stopWaterPlant = {props.stopWatering}
-                                    canWater={canWater}
+                                    <PlantCard
+                                        classes={classes}
+                                        getCardClass={getCardClass}
+                                        image={getImage(index)}
+                                        plant={plant}
+                                        waterPlant={WaterPlantWrapper}
+                                        //stopWaterPlant={stopWaterWrapper}
+                                        canWater={canWater}
+                                        deletePlant={props.deletePlant}
                                     />
                                 </Grid>
                             );
@@ -165,6 +160,8 @@ const mapStateToProps = state => {
 const mapActionToProps = {
     getPlants: actions.getPlants,
     waterPlant: actions.waterPlant,
-    stopWatering: actions.stopWaterPlant
+    stopWatering: actions.stopWaterPlant,
+    addPlant: actions.addPlant,
+    deletePlant: actions.deletePlant
 }
 export default connect(mapStateToProps, mapActionToProps)(withStyles(styles)(LandingContainer));
