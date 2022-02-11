@@ -31,6 +31,8 @@ const styles = theme => ({
     noHighlight: {
         marginTop: '30px',
         marginBottom: '30px',
+        marginLeft: '15px',
+        marginRight: '15px'
     },
     plantContainer: {
         background: '#f2f2f2',
@@ -90,14 +92,14 @@ const LandingContainer = (props) => {
         <React.Fragment>
             <CssBaseline />
             <Navbar addPlant={props.addPlant}/>
-            <Container maxWidth="sm" className={classes.plantContainer}>
+            <Container maxWidth="lg" className={classes.plantContainer}>
 
                 <Grid id="plantsGrid" container>
                     {
 
                         props.plants.map((plant, index) => {
                             return (
-                                <Grid item key={index} sm={12}>
+                                <Grid item key={index} sm={4}>
                                     <PlantCard
                                         classes={classes}
                                         image={getImage(index)}
