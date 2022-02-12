@@ -46,6 +46,7 @@ const LandingContainer = (props) => {
     //componentDidMount
     useEffect(() => {
         props.getPlants();
+        props.setPlantsHealth();
     }, [])
 
     useEffect(() => {
@@ -64,7 +65,7 @@ const LandingContainer = (props) => {
 
     //wrapper for waterPlant action
     const WaterPlantWrapper = (plant) => {
-        if ((new Date() - (new Date(plant.lastWateredTime)))/1000 < 30) {
+        if ((new Date() - (actions.getLocaleTime(plant.lastWateredTime)))/1000 < 30) {
             toast.error("Please wait for 30seconds");
             return;
         }
@@ -91,7 +92,7 @@ const LandingContainer = (props) => {
         var out = false;
         var plantTime;
         props.plants.forEach(plant => {
-            plantTime = new Date(plant.lastWateredTime);
+            plantTime = actions.getLocaleTime(plant.lastWateredTime);
             if (plant.plantId == plantId && plant.status === "ok" && ((new Date() - plantTime) / 1000) > 30) {
                 out = true;
             }
@@ -99,6 +100,7 @@ const LandingContainer = (props) => {
         return out;
     }
 
+    let healthCheckInterval = setInterval(props.setPlantsHealth,25000);
 
     return (
         <React.Fragment>
@@ -123,6 +125,7 @@ const LandingContainer = (props) => {
                                         waterPlant={WaterPlantWrapper}
                                         canWater={canWater}
                                         deletePlant={props.deletePlant}
+                                        plantsHealth={props.plantsHealth}
                                     />
                                 </Grid>
                             );
@@ -137,7 +140,8 @@ const LandingContainer = (props) => {
 }
 const mapStateToProps = state => {
     return {
-        plants: _.values(state.plants)
+        plants: _.values(state.plants),
+        plantsHealth: state.utils.plantsHealth
     };
 }
 const mapActionToProps = {
@@ -147,6 +151,7 @@ const mapActionToProps = {
     addPlant: actions.addPlant,
     deletePlant: actions.deletePlant,
     waterAllPlants: actions.waterAllPlants,
-    stopWaterAllPlants: actions.stopWaterAllPlants
+    stopWaterAllPlants: actions.stopWaterAllPlants,
+    setPlantsHealth: actions.setPlantsHealth
 }
 export default connect(mapStateToProps, mapActionToProps)(withStyles(styles)(LandingContainer));

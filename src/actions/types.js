@@ -8,3 +8,5 @@ export const WATER_ALL_PLANTS = "WATER_ALL_PLANTS";
 export const STOP_WATER_PLANT = "STOP_WATER_PLANT";
 export const STOP_WATER_ALL = "STOP_WATER_ALL";
 export const CLEAR_PLANTS = "CLEAR_PLANTS";
+
+export const SET_PLANTS_HEALTH = "SET_PLANTS_HEALTH";
