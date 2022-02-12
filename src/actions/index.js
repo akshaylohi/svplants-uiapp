@@ -2,13 +2,16 @@ import backend from "./api";
 import { toast } from "react-toastify";
 import _ from "lodash";
 
-import { GET_PLANT, GET_PLANTS, EDIT_PLANT, ADD_PLANT, DELETE_PLANT, WATER_PLANT, STOP_WATER_PLANT } from "./types";
+import { GET_PLANT, GET_PLANTS, EDIT_PLANT, ADD_PLANT, DELETE_PLANT, WATER_PLANT, WATER_ALL_PLANTS,
+   STOP_WATER_ALL, STOP_WATER_PLANT } from "./types";
 
 export const getPlants = () => async (dispatch) => {
     try {
-      const response = await backend.get("/api/Plants", {
+      return backend.get("/api/Plants", {
+      }).then((response)=>{
+        dispatch({ type: GET_PLANTS, payload: response.data });
       });
-      dispatch({ type: GET_PLANTS, payload: response.data });
+      
     } catch (error) {
       if (!_.isEmpty(error)) toast.error(error.response.data.message);
     }
@@ -26,6 +29,38 @@ export const getPlants = () => async (dispatch) => {
     } catch (error) {
       if (!_.isEmpty(error)) toast.error(error.response.data.message);
     }
+  };
+
+  export const waterAllPlants = () => async (dispatch) => {
+    return new Promise((resolve, reject)=>{
+      backend.get("/api/Plants/waterAll/", {
+      })
+      .then(response=>{
+        dispatch({ type: WATER_ALL_PLANTS, payload: response.data});
+        toast.success("Watering all plants");
+        resolve(response);
+      }).catch((err)=> {
+        toast.error("Cannot water all plants. Please wait!")
+        reject(err);
+      });
+    })
+    
+  };
+
+  export const stopWaterAllPlants = () => async (dispatch) => {
+    return new Promise((resolve, reject)=>{
+      backend.get("/api/Plants/stopWaterAll/", {
+      })
+      .then(response=>{
+        dispatch({ type: STOP_WATER_ALL, payload: response.data});
+        toast.success("Stopped watering all plants");
+        resolve(response);
+      }).catch((err)=> {
+        toast.error("Cannot stop watering all plants. Please try individually.")
+        reject(err);
+      });
+    })
+    
   };
 
   export const stopWaterPlant = (plantId) => async (dispatch) => {

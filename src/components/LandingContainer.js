@@ -40,12 +40,24 @@ const styles = theme => ({
     }
 });
 const LandingContainer = (props) => {
-    const plantState = useSelector((state) => state.plants);
+
+    const [waterAllStatus, setWaterAllStatus] = useState("pending");
 
     //componentDidMount
     useEffect(() => {
         props.getPlants();
     }, [])
+
+    useEffect(() => {
+        var flag = true;
+        props.plants.forEach((plant)=>{
+            
+            if(plant.status !="ok"){
+                flag = false;
+            }
+        });
+        setWaterAllStatus(flag?"ok":"busy");
+    }, [props.plants])
 
 
     const { classes } = props;
@@ -91,7 +103,11 @@ const LandingContainer = (props) => {
     return (
         <React.Fragment>
             <CssBaseline />
-            <Navbar addPlant={props.addPlant}/>
+            <Navbar addPlant={props.addPlant} 
+            waterAllPlants={props.waterAllPlants} 
+            waterAllStatus={waterAllStatus} 
+            stopWaterAllPlants={props.stopWaterAllPlants}
+            setWaterAllStatus={setWaterAllStatus}/>
             <Container maxWidth="lg" className={classes.plantContainer}>
 
                 <Grid id="plantsGrid" container>
@@ -129,6 +145,8 @@ const mapActionToProps = {
     waterPlant: actions.waterPlant,
     stopWatering: actions.stopWaterPlant,
     addPlant: actions.addPlant,
-    deletePlant: actions.deletePlant
+    deletePlant: actions.deletePlant,
+    waterAllPlants: actions.waterAllPlants,
+    stopWaterAllPlants: actions.stopWaterAllPlants
 }
 export default connect(mapStateToProps, mapActionToProps)(withStyles(styles)(LandingContainer));
